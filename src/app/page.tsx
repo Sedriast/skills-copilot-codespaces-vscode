@@ -1,6 +1,36 @@
+'use client';
+
+import { useState } from 'react';
 import styles from './page.module.css';
+import CSVUpload from '@/components/data/CSVUpload';
+import ErrorDisplay from '@/components/ui/ErrorDisplay';
+import { CSVData, UploadError } from '@/types';
 
 export default function Home() {
+  const [csvData, setCsvData] = useState<CSVData | null>(null);
+  const [uploadError, setUploadError] = useState<UploadError | null>(null);
+
+  const handleDataUploaded = (data: CSVData) => {
+    setCsvData(data);
+    setUploadError(null);
+    console.log('Data uploaded successfully:', data);
+  };
+
+  const handleUploadError = (error: UploadError) => {
+    setUploadError(error);
+    setCsvData(null);
+    console.error('Upload error:', error);
+  };
+
+  const handleRetry = () => {
+    setUploadError(null);
+    setCsvData(null);
+  };
+
+  const handleDismiss = () => {
+    setUploadError(null);
+  };
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -13,32 +43,100 @@ export default function Home() {
       </header>
 
       <main className={styles.main}>
-        <div className={styles.uploadSection}>
-          <h2>Upload Your Data</h2>
-          <p>Upload your CSV file (max 10 MB) to get started with your business intelligence dashboard.</p>
-          <div className={styles.uploadArea}>
-            <div className={styles.uploadPlaceholder}>
-              <div className={styles.uploadIcon}>📊</div>
-              <p>Drag and drop your CSV file here, or click to browse</p>
-              <small>Maximum file size: 10 MB</small>
+        {!csvData ? (
+          <>
+            <div className={styles.uploadSection}>
+              <h2>Upload Your Data</h2>
+              <p>Upload your CSV file (max 10 MB) to get started with your business intelligence dashboard.</p>
+              
+              {uploadError && (
+                <ErrorDisplay 
+                  error={uploadError} 
+                  onRetry={handleRetry}
+                  onDismiss={handleDismiss}
+                />
+              )}
+              
+              <CSVUpload 
+                onDataUploaded={handleDataUploaded}
+                onError={handleUploadError}
+                disabled={false}
+              />
+            </div>
+
+            <div className={styles.features}>
+              <div className={styles.feature}>
+                <h3>📈 Data Visualization</h3>
+                <p>Interactive charts and graphs to visualize your business data</p>
+              </div>
+              <div className={styles.feature}>
+                <h3>🧹 Data Cleaning</h3>
+                <p>Automatic detection and cleaning of duplicates, missing values, and date formats</p>
+              </div>
+              <div className={styles.feature}>
+                <h3>📄 PDF Reports</h3>
+                <p>Export professional PDF reports with executive summaries and visualizations</p>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className={styles.dataSection}>
+            <div className={styles.dataSummary}>
+              <h2>Data Successfully Loaded</h2>
+              <div className={styles.dataStats}>
+                <div className={styles.stat}>
+                  <strong>{csvData.rows.length}</strong>
+                  <span>Rows</span>
+                </div>
+                <div className={styles.stat}>
+                  <strong>{csvData.headers.length}</strong>
+                  <span>Columns</span>
+                </div>
+                <div className={styles.stat}>
+                  <strong>{Math.round(csvData.originalSize * 0.001)}KB</strong>
+                  <span>Size (est.)</span>
+                </div>
+              </div>
+              <button 
+                className={styles.newUploadButton}
+                onClick={handleRetry}
+              >
+                Upload New File
+              </button>
+            </div>
+
+            <div className={styles.dataPreview}>
+              <h3>Data Preview</h3>
+              <div className={styles.tableContainer}>
+                <table className={styles.previewTable}>
+                  <thead>
+                    <tr>
+                      {csvData.headers.map((header, index) => (
+                        <th key={index}>{header}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {csvData.rows.slice(0, 5).map((row, rowIndex) => (
+                      <tr key={rowIndex}>
+                        {row.map((cell, cellIndex) => (
+                          <td key={cellIndex}>
+                            {cell !== null ? String(cell) : '—'}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {csvData.rows.length > 5 && (
+                  <p className={styles.moreData}>
+                    ... and {csvData.rows.length - 5} more rows
+                  </p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className={styles.features}>
-          <div className={styles.feature}>
-            <h3>📈 Data Visualization</h3>
-            <p>Interactive charts and graphs to visualize your business data</p>
-          </div>
-          <div className={styles.feature}>
-            <h3>🧹 Data Cleaning</h3>
-            <p>Automatic detection and cleaning of duplicates, missing values, and date formats</p>
-          </div>
-          <div className={styles.feature}>
-            <h3>📄 PDF Reports</h3>
-            <p>Export professional PDF reports with executive summaries and visualizations</p>
-          </div>
-        </div>
+        )}
       </main>
 
       <footer className={styles.footer}>
