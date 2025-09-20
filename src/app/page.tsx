@@ -4,11 +4,13 @@ import { useState } from 'react';
 import styles from './page.module.css';
 import CSVUpload from '@/components/data/CSVUpload';
 import ErrorDisplay from '@/components/ui/ErrorDisplay';
-import { CSVData, UploadError } from '@/types';
+import Dashboard from '@/components/dashboard/Dashboard';
+import { CSVData, UploadError, DataCleaningResult } from '@/types';
 
 export default function Home() {
   const [csvData, setCsvData] = useState<CSVData | null>(null);
   const [uploadError, setUploadError] = useState<UploadError | null>(null);
+  const [cleaningResult, setCleaningResult] = useState<DataCleaningResult | null>(null);
 
   const handleDataUploaded = (data: CSVData) => {
     setCsvData(data);
@@ -22,9 +24,14 @@ export default function Home() {
     console.error('Upload error:', error);
   };
 
+  const handleDataCleaned = (cleanedData: CSVData, result: DataCleaningResult) => {
+    setCleaningResult(result);
+  };
+
   const handleRetry = () => {
     setUploadError(null);
     setCsvData(null);
+    setCleaningResult(null);
   };
 
   const handleDismiss = () => {
@@ -80,61 +87,34 @@ export default function Home() {
             </div>
           </>
         ) : (
-          <div className={styles.dataSection}>
-            <div className={styles.dataSummary}>
-              <h2>Data Successfully Loaded</h2>
-              <div className={styles.dataStats}>
-                <div className={styles.stat}>
-                  <strong>{csvData.rows.length}</strong>
-                  <span>Rows</span>
+          <div className={styles.dashboardSection}>
+            <div className={styles.dashboardHeader}>
+              <div className={styles.dataSummary}>
+                <h2>Data Successfully Loaded</h2>
+                <div className={styles.dataStats}>
+                  <div className={styles.stat}>
+                    <strong>{csvData.rows.length}</strong>
+                    <span>Rows</span>
+                  </div>
+                  <div className={styles.stat}>
+                    <strong>{csvData.headers.length}</strong>
+                    <span>Columns</span>
+                  </div>
+                  <div className={styles.stat}>
+                    <strong>{Math.round(csvData.originalSize * 0.001) || '<1'}KB</strong>
+                    <span>Size (est.)</span>
+                  </div>
                 </div>
-                <div className={styles.stat}>
-                  <strong>{csvData.headers.length}</strong>
-                  <span>Columns</span>
-                </div>
-                <div className={styles.stat}>
-                  <strong>{Math.round(csvData.originalSize * 0.001)}KB</strong>
-                  <span>Size (est.)</span>
-                </div>
+                <button 
+                  className={styles.newUploadButton}
+                  onClick={handleRetry}
+                >
+                  Upload New File
+                </button>
               </div>
-              <button 
-                className={styles.newUploadButton}
-                onClick={handleRetry}
-              >
-                Upload New File
-              </button>
             </div>
 
-            <div className={styles.dataPreview}>
-              <h3>Data Preview</h3>
-              <div className={styles.tableContainer}>
-                <table className={styles.previewTable}>
-                  <thead>
-                    <tr>
-                      {csvData.headers.map((header, index) => (
-                        <th key={index}>{header}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {csvData.rows.slice(0, 5).map((row, rowIndex) => (
-                      <tr key={rowIndex}>
-                        {row.map((cell, cellIndex) => (
-                          <td key={cellIndex}>
-                            {cell !== null ? String(cell) : '—'}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {csvData.rows.length > 5 && (
-                  <p className={styles.moreData}>
-                    ... and {csvData.rows.length - 5} more rows
-                  </p>
-                )}
-              </div>
-            </div>
+            <Dashboard rawData={csvData} />
           </div>
         )}
       </main>
