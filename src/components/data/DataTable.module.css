@@ -1,0 +1,199 @@
+.container {
+  width: 100%;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.controls {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.searchContainer {
+  margin-bottom: 1rem;
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: calc(var(--border-radius) - 2px);
+  font-size: 1rem;
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.activeFilters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filtersLabel {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.filterTag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--primary-color);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: calc(var(--border-radius) - 2px);
+  font-size: 0.8125rem;
+}
+
+.removeFilterButton {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 0.25rem;
+  line-height: 1;
+}
+
+.removeFilterButton:hover {
+  opacity: 0.8;
+}
+
+.tableContainer {
+  overflow-x: auto;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.headerCell {
+  background: var(--surface-color);
+  border-bottom: 2px solid var(--border-color);
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-color);
+  cursor: pointer;
+  user-select: none;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.headerCell:hover {
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.sortIcon {
+  font-size: 0.875rem;
+  opacity: 0.6;
+  margin-left: 0.5rem;
+}
+
+.dataRow {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dataRow:hover {
+  background: rgba(37, 99, 235, 0.03);
+}
+
+.dataRow:nth-child(even) {
+  background: rgba(37, 99, 235, 0.02);
+}
+
+.dataRow:nth-child(even):hover {
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.dataCell {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.noData {
+  padding: 3rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.noData p {
+  font-size: 1.125rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.noData small {
+  font-size: 0.875rem;
+}
+
+.tableInfo {
+  padding: 1rem;
+  background: rgba(37, 99, 235, 0.02);
+  border-top: 1px solid var(--border-color);
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .controls {
+    padding: 0.75rem;
+  }
+  
+  .searchInput {
+    max-width: 100%;
+  }
+  
+  .activeFilters {
+    margin-top: 0.75rem;
+  }
+  
+  .filterTag {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+  }
+  
+  .table {
+    min-width: 500px;
+  }
+  
+  .headerCell,
+  .dataCell {
+    padding: 0.5rem;
+    max-width: 120px;
+  }
+  
+  .tableContainer {
+    max-height: 400px;
+  }
+}
